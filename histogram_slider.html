@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Histogram Slider</title>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function(){
+        // Sample data for histogram
+        min = 0;
+        max = 1000000;
+        default_min = 50000
+        default_max = 550000
+        home_data = {
+            "number_of_bins": 10,
+            "homes": [
+                { "address":"1", "price":180000 },
+                { "address":"2", "price":190000 },
+                { "address":"3", "price":210000 },
+                { "address":"4", "price":220000 },
+                { "address":"5", "price":230000 },
+                { "address":"6", "price":330000 },
+                { "address":"7", "price":340000 },
+                { "address":"8", "price":350000 },
+                { "address":"9", "price":360000 },
+                { "address":"10", "price":370000 },
+                { "address":"11", "price":380000 },
+                { "address":"12", "price":410000 },
+                { "address":"13", "price":420000 },
+                { "address":"14", "price":510000 }
+            ]
+        }
+
+        bins = new Array(home_data.number_of_bins).fill(0);
+        width_per_bin = 100/home_data.number_of_bins
+        range_per_bin = (max-min)/home_data.number_of_bins
+        home_data.homes.forEach(function(home, index) {
+          // iterate through data and increment the correct bin based on home.price
+          //debugger;
+        });
+
+        // create histogram based on bins
+        bins = [0, 2, 3, 6, 2, 1, 0, 0, 0, 0]
+        bins.forEach(function(bin, index) {
+          // build histograph based on bin sizes
+          $("#histogram").append( "<div class='pull-left bin_container' style='width:" + width_per_bin + "%;'><div class='blue_background bin' style='height:" + parseInt(10*bin+1) +"px; bottom: -" + parseInt(150 - ((10*bin+1))) + "px;'></div><div class='grey_bin' style='height:" + parseInt(10*bin+1) +"px; bottom: -" + parseInt(150-(10*bin+1)*2) + "px;'></div></div>" );
+        });
+
+        // Initialize slider
+        $( "#histogram_slider" ).slider({
+          range: true,
+          min: min,
+          max: max,
+          values: [ default_min, default_max ],
+          slide: function( event, ui ) {
+            $( "#value" ).html(  "$" + ui.values[0] + " - $" + ui.values[1] );
+
+            // set opacity per bin based on the slider values
+            $(".bin").each(function(index, bin) {
+              max_bin_value = (range_per_bin*(index+1));
+              min_bin_value = (range_per_bin*index)+min;
+
+              if (ui.handle.nextSibling) {
+                // Moving LEFT slider ...
+                // Set opacity based on left (min) slider
+                if(max_bin_value < ui.values[1] ){
+                  if( ui.values[0] > max_bin_value ){
+                    $(this).css("opacity", 0);
+                  } else if ( ui.values[0] < min_bin_value ) {
+                    $(this).css("opacity", 1);
+                  } else {
+                    $(this).css("opacity", 1-(ui.values[0]-min_bin_value)/range_per_bin);
+                  }
+                }
+
+              } else {
+                // Moving RIGHT slider ...
+                // Set opacity based on right (max) slider value
+                if(min_bin_value > ui.values[0]){
+                  if( ui.values[1] > max_bin_value ){
+                    $(this).css("opacity", 1);
+                  } else if ( ui.values[1] < min_bin_value ) {
+                    $(this).css("opacity", 0);
+                  } else {
+                    $(this).css("opacity", (ui.values[1]-min_bin_value)/range_per_bin);
+                  }
+                }
+              }
+            });
+          }
+        });
+
+        $( "#value" ).html(  "$" + default_min + " - $" + default_max );
+        $(".bin").each(function(index, bin) {
+          max_bin_value = (range_per_bin*(index+1));
+          min_bin_value = (range_per_bin*index)+min;
+
+          // Set opacity based on left (min) slider value
+          if( default_min > max_bin_value ){
+            $(this).css("opacity", 0);
+          } else if ( default_min < min_bin_value ) {
+            $(this).css("opacity", 1);
+          } else {
+            $(this).css("opacity", 1-(default_min-min_bin_value)/range_per_bin);
+          }
+
+
+          // Set opacity based on right (max) slider value
+          if(default_max < max_bin_value){
+            if( default_max > max_bin_value ){
+              $(this).css("opacity", 1);
+            } else if ( default_max < min_bin_value ) {
+              $(this).css("opacity", 0);
+            } else {
+              $(this).css("opacity", (default_max-min_bin_value)/range_per_bin);
+            }
+          }
+        });
+
+      });
+    </script>
+    <style>
+      .blue_background {background-color: #0074D9;}
+      #histogram { height: 150px; }
+      .bin {
+        position: relative;
+        z-index: 99;
+      }
+      .grey_bin {
+        position: relative;
+        z-index: 1;
+        background-color: lightgrey;
+      }
+      .bin_container{
+        height: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="text-center">This is an awesome slider!</h1>
+    <br>
+    <p id="value" class="text-center"></p>
+    <br>
+    <div class="row">
+      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <div id="histogram">
+        </div>
+        <br>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+        <div id="histogram_slider"></div>
+    </div>
+  </body>
+</html>
