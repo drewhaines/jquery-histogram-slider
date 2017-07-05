@@ -37,13 +37,14 @@
         bins = new Array(home_data.number_of_bins).fill(0);
         width_per_bin = 100/home_data.number_of_bins
         range_per_bin = (max-min)/home_data.number_of_bins
+
+        // iterate through data and increment the correct bin based on home.price
         home_data.homes.forEach(function(home, index) {
-          // iterate through data and increment the correct bin based on home.price
-          //debugger;
+          index = parseInt(home.price/range_per_bin)
+          bins[index] += 1
         });
 
         // create histogram based on bins
-        bins = [0, 2, 3, 6, 2, 1, 0, 0, 0, 0]
         bins.forEach(function(bin, index) {
           // build histograph based on bin sizes
           $("#histogram").append( "<div class='pull-left bin_container' style='width:" + width_per_bin + "%;'><div class='blue_background bin' style='height:" + parseInt(10*bin+1) +"px; bottom: -" + parseInt(150 - ((10*bin+1))) + "px;'></div><div class='grey_bin' style='height:" + parseInt(10*bin+1) +"px; bottom: -" + parseInt(150-(10*bin+1)*2) + "px;'></div></div>" );
@@ -93,7 +94,8 @@
           }
         });
 
-        $( "#value" ).html(  "$" + default_min + " - $" + default_max );
+
+        // Set the opacity when the page loads
         $(".bin").each(function(index, bin) {
           max_bin_value = (range_per_bin*(index+1));
           min_bin_value = (range_per_bin*index)+min;
@@ -120,6 +122,7 @@
           }
         });
 
+        $( "#value" ).html(  "$" + default_min + " - $" + default_max );
       });
     </script>
     <style>
@@ -145,14 +148,14 @@
     <p id="value" class="text-center"></p>
     <br>
     <div class="row">
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
         <div id="histogram">
         </div>
         <br>
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
         <div id="histogram_slider"></div>
     </div>
   </body>
