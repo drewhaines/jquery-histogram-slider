@@ -17,19 +17,15 @@
         rightHandleValue = 550000
 
         histogramData = {
-            "numberOfBins": 10,
-            "objects": [
-                { "value": 180000 },
-                { "value": 280000 },
-                { "value": 280000 },
-                { "value": 380000 },
-                { "value": 380000 },
-                { "value": 380000 },
-                { "value": 380000 },
-                { "value": 580000 },
-                { "value": 580000 },
-                { "value": 680000 }
-            ]
+            "numberOfBins": 40,
+            "objects": []
+        }
+
+        // programmatically generate the data for the histogram
+        for (i = 0; i < 300; i++) {
+          randomNumber = Math.floor(Math.random() * histogramData.numberOfBins) + 1
+          randomValue = ((sliderMax/histogramData.numberOfBins)-1) * randomNumber
+          histogramData.objects.push({ "value": randomValue })
         }
 
         bins = new Array(histogramData.numberOfBins).fill(0);
@@ -44,7 +40,7 @@
 
         // create histogram based on bins. 10px of height for every object in that bin.
         for (i = 0; i < bins.length; i++) {
-          $("#histogram").append( "<div class='pull-left bin_container' style='width:" + widthPerBin + "%;'><div class='blue_background bin' style='height:" + parseInt(10*bins[i]+1) +"px; bottom: -" + parseInt(150 - ((10*bins[i]+1))) + "px;'></div><div class='grey_bin' style='height:" + parseInt(10*bins[i]+1) +"px; bottom: -" + parseInt(150-(10*bins[i]+1)*2) + "px;'></div></div>" );
+          $("#histogram").append( "<div class='pull-left bin_container' style='width:" + widthPerBin + "%;'><div class='blue_background bin' style='height:" + parseInt(5*bins[i]+1) +"px; bottom: -" + parseInt(200 - ((5*bins[i]+1))) + "px;'></div><div class='grey_bin' style='height:" + parseInt(5*bins[i]+1) +"px; bottom: -" + parseInt(200-(5*bins[i]+1)*2) + "px;'></div></div>" );
         }
 
         // Initialize slider
@@ -100,8 +96,9 @@
     </script>
     <style>
       .blue_background {background-color: #0074D9;}
-      #histogram { height: 150px; }
-      .bin_container{ height: 150px; }
+      #histogram { height: 200px; }
+      .histogram_wrapper{ width: 400px; margin: auto; }
+      .bin_container{ height: 200px; }
       .bin {
         position: relative;
         z-index: 99;
@@ -119,15 +116,13 @@
     <p id="value" class="text-center"></p>
     <br>
     <div class="row">
-      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
-        <div id="histogram">
+      <div class="col-xs-10 col-xs-offset-1">
+        <div class="histogram_wrapper">
+          <div id="histogram"></div>
+          <br>
+          <div id="histogram_slider"></div>
         </div>
-        <br>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
-        <div id="histogram_slider"></div>
     </div>
     <br>
     <br>
