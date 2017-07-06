@@ -81,7 +81,7 @@
             for (i = 0; i < histoData.items.length; i++) {
                 var index = parseInt(histoData.items[i].value / rangePerBin),
                     increment = 1;
-                
+
                 if (histoData.items[i].count) {
                     increment = parseInt(histoData.items[i].count);
                 }
@@ -109,11 +109,11 @@
                 var rh = parseInt(bins[i] * heightRatio),
                     h = parseInt(5 * rh + 1),
                     b = parseInt(self.options.height - h),
-                    bb = parseInt(self.options.height - h * 2);
+                    bb = -parseInt(self.options.height - h * 2);
 
                 var binHtml = "<div style='float:left!important;width:" + widthPerBin + "%;'>" +
                     "<div class='bin in-range' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
-                    "<div class='bin out-of-range' style='z-index:0;height:" + h + "px;bottom:-" + bb + "px;'></div>" +
+                    "<div class='bin out-of-range' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
                     "</div>";
 
                 $("#" + histogramName).append(binHtml);
@@ -129,7 +129,7 @@
                 }
             });
 
-            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, false, self.options.slideMin, rangePerBin, histogramName);
+            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, false, self.options.sliderMin, rangePerBin, histogramName);
             updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, true, self.options.sliderMin, rangePerBin, histogramName);
         }
     };
