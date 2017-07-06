@@ -52,11 +52,12 @@
         this.options = {
             sliderMin: 0,
             sliderMax: 1000000,
-            leftHandleValue: 150000,
-            rightHandleValue: 550000,
+            leftHandleValue: 0,
+            rightHandleValue: 1000000,
             backgroundColorInRange: "#0079BA",
             backgroundColorOutOfRange: "#DBE0E2",
-            height: 200
+            height: 200,
+            prequalifed: 0
         };
 
         this.init(options);
@@ -99,7 +100,7 @@
                 heightRatio = parseInt(5 * maxValue + 1) / self.options.height;
             }
 
-            var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px;'></div>" +
+            var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px; overflow: hidden;'></div>" +
                 "<div id='" + sliderName + "'></div>";
 
             self.element.html(wrapHtml);
@@ -109,11 +110,14 @@
                 var rh = parseInt(bins[i] * heightRatio),
                     h = parseInt(5 * rh + 1),
                     b = parseInt(self.options.height - h),
-                    bb = -parseInt(self.options.height - h * 2);
+                    bb = -parseInt(self.options.height - h * 2),
+                    minBinValue = (rangePerBin * i) + this.options.sliderMin,
+                    inRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified in-range" : "in-range"),
+                    outRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified out-of-range" : "out-of-range")
 
                 var binHtml = "<div style='float:left!important;width:" + widthPerBin + "%;'>" +
-                    "<div class='bin in-range' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
-                    "<div class='bin out-of-range' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
+                    "<div class='bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
+                    "<div class='bin " + outRangeClass + "' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
                     "</div>";
 
                 $("#" + histogramName).append(binHtml);

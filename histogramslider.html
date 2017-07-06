@@ -2,13 +2,11 @@
 <html>
 <head>
     <title>Histogram Slider</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
     <script src="histogram.slider.js"></script>
     <script>
         $(function () {
@@ -28,7 +26,8 @@
             $("#histogramSlider").histogramSlider({
                 leftHandleValue: 150000,
                 rightHandleValue: 750000,
-                data: data
+                data: data,
+                prequalifed: 500000
             });
 
             var data2 = {
@@ -44,8 +43,8 @@
             }
 
             $("#histogramSlider2").histogramSlider({
-                leftHandleValue: 0,
-                rightHandleValue: 1000000,
+                leftHandleValue: 150000,
+                rightHandleValue: 750000,
                 data: data2,
                 height: 200
             });
@@ -53,12 +52,12 @@
     </script>
     <style>
         #histogramSlider {
-            width: 400px;
+            max-width: 400px;
             margin: auto;
         }
 
         #histogramSlider2 {
-            width: 400px;
+            max-width: 400px;
             margin: auto;
         }
 
@@ -73,6 +72,14 @@
 
         .out-of-range {
             background-color: #DBE0E2;
+        }
+
+        .prequalified.in-range {
+            background-color: #01E2D4;
+        }
+
+        .prequalified.out-of-range {
+            background-color: #caf9f6;
         }
 
         .ui-slider-horizontal { height: .2em; }

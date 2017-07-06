@@ -1,1 +1,1 @@
-<?php include_once("histogram_slider.html"); ?>
+<?php include_once("histogramslider.html"); ?>
