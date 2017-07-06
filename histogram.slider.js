@@ -112,11 +112,13 @@
                     b = parseInt(self.options.height - h),
                     bb = -parseInt(self.options.height - h * 2),
                     minBinValue = (rangePerBin * i) + this.options.sliderMin,
+                    maxBinValue = rangePerBin * (i + 1) - 1,
                     inRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified in-range" : "in-range"),
                     outRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified out-of-range" : "out-of-range")
 
-                var binHtml = "<div style='float:left!important;width:" + widthPerBin + "%;'>" +
-                    "<div class='bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
+                var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
+                    "<span class='tooltiptext'>" + minBinValue + " - " + maxBinValue + ", count: " + bins[i] +"</span>" +
+                    "<div class='tooltip bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
                     "<div class='bin " + outRangeClass + "' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
                     "</div>";
 

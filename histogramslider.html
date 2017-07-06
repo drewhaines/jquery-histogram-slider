@@ -48,6 +48,27 @@
                 data: data2,
                 height: 200
             });
+
+
+            // Verify the data is correct
+            // Display it in a table on the page
+            function sortNumber(a,b) {
+                return b - a;
+            }
+
+            var dataArray = []; data.items
+            for (var i = 0; i < data.items.length; i++) {
+                dataArray.push(data.items[i].value)
+            }
+
+            dataArray = dataArray.sort(sortNumber);
+
+            count = 0
+            for (var i = 0; i < dataArray.length; i++) {
+                count++;
+                $("#data").after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>")
+                if( dataArray[i] != dataArray[i+1] ){ count = 0; }
+            }
         });
     </script>
     <style>
@@ -89,11 +110,41 @@
             border-radius: 50%;
         }
 
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: lightgrey;
+            color: black;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            margin-left: -60px;
+
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            top: 100px;
+        }
     </style>
 </head>
 <body>
     <p id="value"></p>
     <div id="histogramSlider"></div>
+
+    <table>
+      <tr id="data">
+        <th>Value</th>
+        <th>Running Count</th>
+      </tr>
+    </table>
+
     <div id="histogramSlider2"></div>
+
 </body>
 </html>
