@@ -18,8 +18,8 @@
             // programmatically generate the data for the histogram
             for (var i = 0; i < 300; i++) {
                 var randomNumber = Math.floor(Math.random() * data.numberOfBins) + 1;
-                var randomValue = ((1000000 / data.numberOfBins) - 1) * randomNumber;
-                //data.items.push({ "value": randomValue, "count": 2 });
+                var randomNumber2 = Math.floor(Math.random() * 12000);
+                var randomValue = ((1000000 / data.numberOfBins) - randomNumber2) * randomNumber;
                 data.items.push({ "value": randomValue });
             }
 
@@ -56,6 +56,11 @@
                 return b - a;
             }
 
+            function round25000(x)
+            {
+                return Math.ceil(x/25000)*25000;
+            }
+
             var dataArray = []; data.items
             for (var i = 0; i < data.items.length; i++) {
                 dataArray.push(data.items[i].value)
@@ -67,7 +72,10 @@
             for (var i = 0; i < dataArray.length; i++) {
                 count++;
                 $("#data").after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>")
-                if( dataArray[i] != dataArray[i+1] ){ count = 0; }
+                if( round25000(dataArray[i]) > round25000(dataArray[i+1]) ){
+                  count = 0;
+                  $("#data").after("<tr><td>----------</td></tr>")
+                 }
             }
         });
     </script>
