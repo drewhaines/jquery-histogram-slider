@@ -1,3 +1,12 @@
+// TODO
+// Scale values based on height
+// Remove hard reference to #value
+// Add second background color for second range
+// Integrate with knockout.js
+// External .css
+
+// https://jqueryboilerplate.com/
+// https://github.com/jquery-boilerplate/jquery-boilerplate/wiki/jQuery-boilerplate-and-demo
 ; (function ($, window, document, undefined) {
 
     var pluginName = "histogramSlider",

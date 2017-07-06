@@ -2,12 +2,13 @@
 <html>
 <head>
     <title>Histogram Slider</title>
-    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <script src="histogram.slider.js"></script>
     <script>
         $(function () {
@@ -41,7 +42,7 @@
                 var randomValue = ((1000000 / data.numberOfBins) - 1) * randomNumber;
                 data2.items.push({ "value": randomValue, "count": 2 });
             }
-        
+
             $("#histogramSlider2").histogramSlider({
                 leftHandleValue: 0,
                 rightHandleValue: 1000000,
@@ -73,30 +74,19 @@
         .out-of-range {
             background-color: #DBE0E2;
         }
+
+        .ui-slider-horizontal { height: .2em; }
+        .ui-slider .ui-slider-handle {
+            width: .8em;
+            height: .8em;    
+            border-radius: 50%;    
+        }
+        
     </style>
 </head>
 <body>
-    <h1 class="text-center">This is an awesome responsive slider!</h1>
-    <br>
-    <p id="value" class="text-center"></p>
-    <br>
-    <div class="row">
-        <div class="col-xs-10 col-xs-offset-1">
-            <div id="histogramSlider"></div>
-        </div>
-    </div>
-    <div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
-        <div id="histogramSlider2"></div>
-    </div>  
-    </div>
-
-    <div class="row">
-        <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 text-center">
-            <h4>Made by Drew Haines</h4>
-            <a href="https://github.com/drewhaines/jquery-histogram-slider" target="_blank">Check out the Code!</a>
-        </div>
-    </div>
+    <p id="value"></p>
+    <div id="histogramSlider"></div>
+    <div id="histogramSlider2"></div>
 </body>
 </html>
-
