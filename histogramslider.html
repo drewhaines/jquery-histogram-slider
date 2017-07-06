@@ -10,16 +10,17 @@
     <script src="histogram.slider.js"></script>
     <script>
         $(function () {
-            var data = {
-                "numberOfBins": 40,
-                "items": []
-            }
+            var numberOfBins = 40,
+                numberOfBins2 = 20,
+                data = {
+                  "items": []
+                }
 
             // programmatically generate the data for the histogram
             for (var i = 0; i < 300; i++) {
-                var randomNumber = Math.floor(Math.random() * data.numberOfBins) + 1;
+                var randomNumber = Math.floor(Math.random() * numberOfBins) + 1;
                 var randomNumber2 = Math.floor(Math.random() * 12000);
-                var randomValue = ((1000000 / data.numberOfBins) - randomNumber2) * randomNumber;
+                var randomValue = ((1000000 / numberOfBins) - randomNumber2) * randomNumber;
                 data.items.push({ "value": randomValue });
             }
 
@@ -27,26 +28,26 @@
                 leftHandleValue: 150000,
                 rightHandleValue: 750000,
                 data: data,
-                prequalifed: 500000
+                prequalifed: 300000,
+                numberOfBins: numberOfBins
             });
 
             var data2 = {
-                "numberOfBins": 40,
                 "items": []
             }
 
             // programmatically generate the data for the histogram
             for (var i = 0; i < 300; i++) {
-                var randomNumber = Math.floor(Math.random() * data.numberOfBins) + 1;
-                var randomValue = ((1000000 / data.numberOfBins) - 1) * randomNumber;
-                data2.items.push({ "value": randomValue, "count": 2 });
+                var randomNumber = Math.floor(Math.random() * numberOfBins2) + 1;
+                var randomValue = ((1000000 / numberOfBins2) - 1) * randomNumber;
+                data2.items.push({ "value": randomValue });
             }
 
             $("#histogramSlider2").histogramSlider({
                 leftHandleValue: 150000,
                 rightHandleValue: 750000,
                 data: data2,
-                height: 200
+                numberOfBins: numberOfBins2
             });
 
 
@@ -131,7 +132,7 @@
 
             /* Position the tooltip text - see examples below! */
             position: absolute;
-            z-index: 1;
+            z-index: 100;
         }
 
         /* Show the tooltip text when you mouse over the tooltip container */
@@ -142,10 +143,9 @@
     </style>
 </head>
 <body>
-    <p id="value"></p>
     <div id="histogramSlider"></div>
 
-    <table>
+    <table style="display: none;">
       <tr id="data">
         <th>Value</th>
         <th>Running Count</th>
@@ -153,6 +153,5 @@
     </table>
 
     <div id="histogramSlider2"></div>
-
 </body>
 </html>

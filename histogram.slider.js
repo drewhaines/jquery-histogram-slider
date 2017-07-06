@@ -12,8 +12,8 @@
     var pluginName = "histogramSlider",
         dataKey = "plugin_" + pluginName;
 
-    var updateHistogram = function (leftHandleValue, rightHandleValue, isLeftSlider, sliderMin, rangePerBin, histogramName) {
-        $( "#value" ).html(  "$" + leftHandleValue + " - $" + rightHandleValue );
+    var updateHistogram = function (leftHandleValue, rightHandleValue, isLeftSlider, sliderMin, rangePerBin, histogramName, sliderName) {
+        $( "#" + sliderName + "-value" ).html(  "$" + leftHandleValue + " - $" + rightHandleValue );
 
         // set opacity per bin based on the slider values
         $("#"+ histogramName + " .in-range").each(function (index, bin) {
@@ -57,7 +57,8 @@
             backgroundColorInRange: "#0079BA",
             backgroundColorOutOfRange: "#DBE0E2",
             height: 200,
-            prequalifed: 0
+            prequalifed: 0,
+            numberOfBins: 40
         };
 
         this.init(options);
@@ -69,10 +70,10 @@
 
             var self = this,
                 histoData = self.options.data,
-                bins = new Array(histoData.numberOfBins).fill(0),
-                widthPerBin = 100 / histoData.numberOfBins,
+                bins = new Array(this.options.numberOfBins).fill(0),
+                widthPerBin = 100 / this.options.numberOfBins,
                 range = self.options.sliderMax - self.options.sliderMin,
-                rangePerBin = range / histoData.numberOfBins,
+                rangePerBin = range / this.options.numberOfBins,
                 maxValue = 0,
                 heightRatio = 1,
                 histogramName = self.element.attr('id') + "-histogram",
@@ -105,12 +106,12 @@
 
             self.element.html(wrapHtml);
 
-            // create histogram based on bins. 10px of height for every item in that bin.
+            // create histogram based on bins. 5px of height for every item in that bin.
             for (i = 0; i < bins.length; i++) {
-                var rh = parseInt(bins[i] * heightRatio),
-                    h = parseInt(5 * rh + 1),
-                    b = parseInt(self.options.height - h),
-                    bb = -parseInt(self.options.height - h * 2),
+                var rh = parseInt(bins[i] * heightRatio),   // set the relative height
+                    h = parseInt(5 * rh + 1),               // set the actual height using the relative height
+                    b = parseInt(self.options.height - h),  // set the bottom offset for the in-range bin
+                    bb = -parseInt(self.options.height - h * 2),  // set the bottom offset for the out-of-range bin
                     minBinValue = (rangePerBin * i) + this.options.sliderMin,
                     maxBinValue = rangePerBin * (i + 1) - 1,
                     inRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified in-range" : "in-range"),
@@ -131,12 +132,14 @@
                 max: self.options.sliderMax,
                 values: [self.options.leftHandleValue, self.options.rightHandleValue],
                 slide: function (event, ui) {
-                    updateHistogram(ui.values[0], ui.values[1], Boolean(ui.handle.nextSibling), self.options.sliderMin, rangePerBin, histogramName);
+                    updateHistogram(ui.values[0], ui.values[1], Boolean(ui.handle.nextSibling), self.options.sliderMin, rangePerBin, histogramName, sliderName);
                 }
             });
 
-            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, false, self.options.sliderMin, rangePerBin, histogramName);
-            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, true, self.options.sliderMin, rangePerBin, histogramName);
+            $("#" + sliderName).after("<p id='" + sliderName + "-value' style='text-align: center;'></p>");
+
+            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, false, self.options.sliderMin, rangePerBin, histogramName, sliderName);
+            updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, true, self.options.sliderMin, rangePerBin, histogramName, sliderName);
         }
     };
 
