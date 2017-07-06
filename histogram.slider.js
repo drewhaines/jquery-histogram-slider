@@ -13,7 +13,7 @@
         dataKey = "plugin_" + pluginName;
 
     var updateHistogram = function (leftHandleValue, rightHandleValue, isLeftSlider, sliderMin, rangePerBin, histogramName, sliderName) {
-        $( "#" + sliderName + "-value" ).html(  "$" + leftHandleValue + " - $" + rightHandleValue );
+        $( "#" + sliderName + "-value" ).html( leftHandleValue + " - " + rightHandleValue );
 
         // set opacity per bin based on the slider values
         $("#"+ histogramName + " .in-range").each(function (index, bin) {
@@ -57,8 +57,10 @@
             backgroundColorInRange: "#0079BA",
             backgroundColorOutOfRange: "#DBE0E2",
             height: 200,
-            prequalifed: 0,
-            numberOfBins: 40
+            optimalRange: 0,
+            numberOfBins: 40,
+            showTooltips: false,
+            showValues: true
         };
 
         this.init(options);
@@ -114,12 +116,13 @@
                     bb = -parseInt(self.options.height - h * 2),  // set the bottom offset for the out-of-range bin
                     minBinValue = (rangePerBin * i) + this.options.sliderMin,
                     maxBinValue = rangePerBin * (i + 1) - 1,
-                    inRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified in-range" : "in-range"),
-                    outRangeClass = ((self.options.prequalifed > minBinValue) ? "prequalified out-of-range" : "out-of-range")
+                    inRangeClass = ((self.options.optimalRange > minBinValue) ? "optimalRange in-range" : "in-range"),
+                    outRangeClass = ((self.options.optimalRange > minBinValue) ? "optimalRange out-of-range" : "out-of-range")
+                    showTooltip = (self.options.showTooltips ? "" : "display-none")
 
                 var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
-                    "<span class='tooltiptext'>" + minBinValue + " - " + maxBinValue + ", count: " + bins[i] +"</span>" +
-                    "<div class='tooltip bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
+                    "<span class='tooltiptext " + showTooltip + "'>" + minBinValue + " - " + maxBinValue + ", count: " + bins[i] +"</span>" +
+                    "<div class='bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
                     "<div class='bin " + outRangeClass + "' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
                     "</div>";
 
@@ -136,7 +139,9 @@
                 }
             });
 
-            $("#" + sliderName).after("<p id='" + sliderName + "-value' style='text-align: center;'></p>");
+            if(self.options.showValues){
+              $("#" + sliderName).after("<p id='" + sliderName + "-value' style='text-align: center;'></p>");
+            }
 
             updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, false, self.options.sliderMin, rangePerBin, histogramName, sliderName);
             updateHistogram(self.options.leftHandleValue, self.options.rightHandleValue, true, self.options.sliderMin, rangePerBin, histogramName, sliderName);

@@ -14,6 +14,9 @@
                 numberOfBins2 = 20,
                 data = {
                   "items": []
+                },
+                data2 = {
+                    "items": []
                 }
 
             // programmatically generate the data for the histogram
@@ -24,18 +27,6 @@
                 data.items.push({ "value": randomValue });
             }
 
-            $("#histogramSlider").histogramSlider({
-                leftHandleValue: 150000,
-                rightHandleValue: 750000,
-                data: data,
-                prequalifed: 300000,
-                numberOfBins: numberOfBins
-            });
-
-            var data2 = {
-                "items": []
-            }
-
             // programmatically generate the data for the histogram
             for (var i = 0; i < 300; i++) {
                 var randomNumber = Math.floor(Math.random() * numberOfBins2) + 1;
@@ -43,11 +34,23 @@
                 data2.items.push({ "value": randomValue });
             }
 
+            $("#histogramSlider").histogramSlider({
+                leftHandleValue: 150000,
+                rightHandleValue: 750000,
+                data: data,
+                optimalRange: 300000,
+                numberOfBins: numberOfBins,
+                showTooltips: true,
+                showValues: true
+            });
+
             $("#histogramSlider2").histogramSlider({
                 leftHandleValue: 150000,
                 rightHandleValue: 750000,
                 data: data2,
-                numberOfBins: numberOfBins2
+                numberOfBins: numberOfBins2,
+                showValues: false,
+                showTooltips: false
             });
 
 
@@ -91,6 +94,10 @@
             margin: auto;
         }
 
+        .display-none{
+          display: none;
+        }
+
         .bin {
             position: relative;
             margin-right: 1px;
@@ -104,11 +111,11 @@
             background-color: #DBE0E2;
         }
 
-        .prequalified.in-range {
+        .optimalRange.in-range {
             background-color: #01E2D4;
         }
 
-        .prequalified.out-of-range {
+        .optimalRange.out-of-range {
             background-color: #caf9f6;
         }
 
@@ -120,7 +127,7 @@
         }
 
         /* Tooltip text */
-        .tooltip .tooltiptext {
+        .tooltip > .tooltiptext {
             visibility: hidden;
             width: 120px;
             background-color: lightgrey;
@@ -136,9 +143,9 @@
         }
 
         /* Show the tooltip text when you mouse over the tooltip container */
-        .tooltip:hover .tooltiptext {
+        .tooltip:hover > .tooltiptext {
             visibility: visible;
-            top: 100px;
+            margin-top: 50px;
         }
     </style>
 </head>
