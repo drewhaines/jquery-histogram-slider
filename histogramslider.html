@@ -20,7 +20,7 @@
                 }
 
             // programmatically generate the data for the histogram
-            for (var i = 0; i < 300; i++) {
+            for (var i = 0; i < 5000; i++) {
                 var randomNumber = Math.floor(Math.random() * numberOfBins) + 1;
                 var randomNumber2 = Math.floor(Math.random() * 12000);
                 var randomValue = ((1000000 / numberOfBins) - randomNumber2) * randomNumber;
@@ -50,7 +50,11 @@
                 data: data2,
                 numberOfBins: numberOfBins2,
                 showValues: false,
-                showTooltips: false
+                showTooltips: false,
+                optimalRange: 300000,
+                backgroundColorInRange: "#db1855",
+                optimalBackgroundColorInRange: "#4ca630",
+                optimalBackgroundColorOutOfRange: "#b2f4be"
             });
 
 
@@ -101,22 +105,6 @@
         .bin {
             position: relative;
             margin-right: 1px;
-        }
-
-        .in-range {
-            background-color: #0079BA;
-        }
-
-        .out-of-range {
-            background-color: #DBE0E2;
-        }
-
-        .optimalRange.in-range {
-            background-color: #01E2D4;
-        }
-
-        .optimalRange.out-of-range {
-            background-color: #caf9f6;
         }
 
         .ui-slider-horizontal { height: .2em; }
