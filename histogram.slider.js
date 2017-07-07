@@ -99,7 +99,7 @@
             }
 
             if (parseInt(5 * maxValue + 1) > self.options.height) {
-                heightRatio =  (self.options.height*(2/3))/(5 * maxValue+1);
+                heightRatio =  (self.options.height)/(5 * maxValue+1);
             }
 
             var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px; overflow: hidden;'></div>" +
