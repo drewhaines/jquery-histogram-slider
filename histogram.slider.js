@@ -1,7 +1,4 @@
 // TODO
-// Scale values based on height
-// Remove hard reference to #value
-// Add second background color for second range
 // Integrate with knockout.js
 // External .css
 
@@ -56,6 +53,8 @@
             rightHandleValue: 1000000,
             backgroundColorInRange: "#0079BA",
             backgroundColorOutOfRange: "#DBE0E2",
+            optimalBackgroundColorInRange: "#01E2D4",
+            optimalBackgroundColorOutOfRange: "#caf9f6",
             height: 200,
             optimalRange: 0,
             numberOfBins: 40,
@@ -100,7 +99,7 @@
             }
 
             if (parseInt(5 * maxValue + 1) > self.options.height) {
-                heightRatio = parseInt(5 * maxValue + 1) / self.options.height;
+                heightRatio =  (self.options.height*(2/3))/(5 * maxValue+1);
             }
 
             var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px; overflow: hidden;'></div>" +
@@ -116,14 +115,14 @@
                     bb = -parseInt(self.options.height - h * 2),  // set the bottom offset for the out-of-range bin
                     minBinValue = (rangePerBin * i) + this.options.sliderMin,
                     maxBinValue = rangePerBin * (i + 1) - 1,
-                    inRangeClass = ((self.options.optimalRange > minBinValue) ? "optimalRange in-range" : "in-range"),
-                    outRangeClass = ((self.options.optimalRange > minBinValue) ? "optimalRange out-of-range" : "out-of-range")
+                    inRangeStyling = ((self.options.optimalRange > minBinValue) ? "background-color: " + this.options.optimalBackgroundColorInRange + ";" : "background-color: " + this.options.backgroundColorInRange + ";"),
+                    outRangeStyling = ((self.options.optimalRange > minBinValue) ? "background-color: " + this.options.optimalBackgroundColorOutOfRange + ";" : "background-color: " + this.options.backgroundColorOutOfRange + ";"),
                     showTooltip = (self.options.showTooltips ? "" : "display-none")
 
                 var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
                     "<span class='tooltiptext " + showTooltip + "'>" + minBinValue + " - " + maxBinValue + ", count: " + bins[i] +"</span>" +
-                    "<div class='bin " + inRangeClass + "' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;'></div>" +
-                    "<div class='bin " + outRangeClass + "' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;'></div>" +
+                    "<div class='bin in-range' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;" + inRangeStyling + "'></div>" +
+                    "<div class='bin out-of-range' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;" + outRangeStyling + "'></div>" +
                     "</div>";
 
                 $("#" + histogramName).append(binHtml);
