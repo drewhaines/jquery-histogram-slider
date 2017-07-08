@@ -10,53 +10,49 @@
     <script src="histogram.slider.js"></script>
     <script>
         $(function () {
-            var numberOfBins = 40,
-                numberOfBins2 = 20,
-                data = {
-                  "items": []
-                },
-                data2 = {
-                    "items": []
-                }
-
-            // programmatically generate the data for the histogram
-            for (var i = 0; i < 5000; i++) {
-                var randomNumber = Math.floor(Math.random() * numberOfBins) + 1;
-                var randomNumber2 = Math.floor(Math.random() * 12000);
-                var randomValue = ((1000000 / numberOfBins) - randomNumber2) * randomNumber;
-                data.items.push({ "value": randomValue });
-            }
-
-            // programmatically generate the data for the histogram
-            for (var i = 0; i < 300; i++) {
-                var randomNumber = Math.floor(Math.random() * numberOfBins2) + 1;
-                var randomValue = ((1000000 / numberOfBins2) - 1) * randomNumber;
-                data2.items.push({ "value": randomValue });
-            }
+            var numBins = 40;
 
             $("#histogramSlider").histogramSlider({
-                leftHandleValue: 150000,
-                rightHandleValue: 750000,
-                data: data,
-                optimalRange: 300000,
-                numberOfBins: numberOfBins,
+                data: dataFactory(5000, numBins, false),
+                sliderRange: [0, 1000000],
+                optimalRange: [0, 300000],
+                selectedRange: [150000, 750000],
+                numberOfBins: numBins,
                 showTooltips: true,
                 showValues: true
             });
 
+            numBins = 20;
+
             $("#histogramSlider2").histogramSlider({
-                leftHandleValue: 150000,
-                rightHandleValue: 750000,
-                data: data2,
-                numberOfBins: numberOfBins2,
+                data: dataFactory(300, numBins, true),
+                sliderRange: [0, 1000000],
+                optimalRange: [0, 300000],
+                selectedRange: [150000, 750000],
+                numberOfBins: numBins,
                 showValues: false,
-                showTooltips: false,
-                optimalRange: 300000,
-                backgroundColorInRange: "#db1855",
-                optimalBackgroundColorInRange: "#4ca630",
-                optimalBackgroundColorOutOfRange: "#b2f4be"
+                showTooltips: true,
+                colorSelected: "#db1855",
+                colorOptimal: "#b2f4be",
+                colorOptimalSelected: "#4ca630"
             });
 
+            function dataFactory(itemCount, numberOfBins, group) {
+                var data = { "items": [] };
+
+                for (var i = 0; i < itemCount; i++) {
+                    var rnd = Math.floor(Math.random() * numberOfBins) + 1;
+                    var rnd2 = Math.floor(Math.random() * 12000);
+                    var v = ((1000000 / numberOfBins) - rnd2) * rnd;
+                    if (group) {
+                        data.items.push({ "value": v, "count": rnd });
+                    } else {
+                        data.items.push({ "value": v });
+                    }
+                }
+
+                return data;
+            }
 
             // Verify the data is correct
             // Display it in a table on the page
@@ -71,19 +67,19 @@
 
             var dataArray = []; data.items
             for (var i = 0; i < data.items.length; i++) {
-                dataArray.push(data.items[i].value)
+                dataArray.push(data.items[i].value);
             }
 
             dataArray = dataArray.sort(sortNumber);
 
-            count = 0
+            var count = 0;
             for (var i = 0; i < dataArray.length; i++) {
                 count++;
-                $("#data").after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>")
-                if( round25000(dataArray[i]) > round25000(dataArray[i+1]) ){
-                  count = 0;
-                  $("#data").after("<tr><td>----------</td></tr>")
-                 }
+                $("#data").after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>");
+                if (round25000(dataArray[i]) > round25000(dataArray[i+1])) {
+                    count = 0;
+                    $("#data").after("<tr><td>----------</td></tr>");
+                }
             }
         });
     </script>
@@ -103,7 +99,7 @@
         }
 
         .bin {
-            position: relative;
+            
             margin-right: 1px;
         }
 
