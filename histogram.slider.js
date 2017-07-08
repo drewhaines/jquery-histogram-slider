@@ -2,7 +2,7 @@
     var pluginName = "histogramSlider",
         dataKey = "plugin_" + pluginName;
 
-    var updateHistogram = function (selectedRange, isLeftSlider, sliderMin, rangePerBin, histogramName, sliderName) {
+    var updateHistogram = function (selectedRange, leftSliderChanged, sliderMin, rangePerBin, histogramName, sliderName) {
         var leftValue = selectedRange[0],
             rightValue = selectedRange[1];
 
@@ -13,22 +13,24 @@
             maxBinValue = rangePerBin * (index + 1);
             minBinValue = (rangePerBin * index) + sliderMin;
 
-            if (isLeftSlider && maxBinValue < rightValue) {
+            if (leftSliderChanged && maxBinValue < rightValue) {
                 // Set opacity based on left (min) slider
                 if (leftValue > maxBinValue) {
                     setOpacity(bin, 0);
                 } else if (leftValue < minBinValue) {
                     setOpacity(bin, 1);
                 } else {
+                    //setOpacity(bin, 1);
                     setOpacity(bin, 1 - (leftValue - minBinValue) / rangePerBin);
                 }
-            } else if (!isLeftSlider && minBinValue > leftValue) {
+            } else if (!leftSliderChanged && minBinValue > leftValue) {
                 // Set opacity based on right (max) slider value
                 if (rightValue > maxBinValue) {
                     setOpacity(bin, 1);
                 } else if (rightValue < minBinValue) {
                     setOpacity(bin, 0);
                 } else {
+                    //setOpacity(bin, 1);
                     setOpacity(bin, (rightValue - minBinValue) / rangePerBin);
                 }
             }
@@ -62,14 +64,10 @@
             sliderRange: [0, 1000000], // Min and Max slider values
             optimalRange: [0, 0], // Optimal range to select within
             selectedRange: [0, 0], // Min and Max slider values selected
-            color: "#DBE0E2",
-            colorSelected: "#0079BA",
-            colorOptimal: "#CAF9F6",
-            colorOptimalSelected: "#01E2D4",
             height: 200,
             numberOfBins: 40,
             showTooltips: false,
-            showValues: true
+            showSelectedRange: false
         };
 
         this.init(options);
@@ -101,7 +99,7 @@
             var histogramName = self.element.attr('id') + "-histogram",
                 sliderName = self.element.attr('id') + "-slider";
 
-            var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px; overflow: hidden;border: 1px solid black;'></div>" +
+            var wrapHtml = "<div id='" + histogramName + "' style='height:" + self.options.height + "px; overflow: hidden;'></div>" +
                 "<div id='" + sliderName + "'></div>";
 
             self.element.html(wrapHtml);
@@ -117,14 +115,15 @@
                     bb = -parseInt(self.options.height - h * 2),  // set the bottom offset for the out-of-range bin
                     minBinValue = (rangePerBin * i) + this.options.sliderRange[0],
                     maxBinValue = rangePerBin * (i + 1) - 1,
-                    inRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "background-color: " + this.options.colorOptimalSelected + ";" : "background-color: " + this.options.colorSelected + ";"),
-                    outRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "background-color: " + this.options.colorOptimal + ";" : "background-color: " + this.options.color + ";"),
-                    showTooltip = (self.options.showTooltips ? "" : "display-none")
+                    inRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "bin-color-optimal-selected" : "bin-color-selected"),
+                    outRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "bin-color-optimal" : "bin-color");
+
+                var toolTipHtml = self.options.showTooltips ? "<span class='tooltiptext'>" + minBinValue + " - " + maxBinValue + "</br>count: " + bins[i] + "</span>" : "";
 
                 var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
-                    "<span class='tooltiptext " + showTooltip + "'>" + minBinValue + " - " + maxBinValue + ", count: " + bins[i] +"</span>" +
-                    "<div class='bin in-range' style='z-index:1;height:" + h + "px;bottom:-" + b + "px;" + inRangeStyling + ";position: relative;'></div>" +
-                    "<div class='bin out-of-range' style='z-index:0;height:" + h + "px;bottom:" + bb + "px;" + outRangeStyling + "position: relative;'></div>" +
+                    toolTipHtml +
+                    "<div class='bin in-range " + inRangeStyling + "' style='height:" + h + "px;bottom:-" + b + "px;position: relative;'></div>" +
+                    "<div class='bin out-of-range " + outRangeStyling + "' style='height:" + h + "px;bottom:" + bb + "px;position: relative;'></div>" +
                     "</div>";
 
                 $("#" + histogramName).append(binHtml);
@@ -140,8 +139,8 @@
                 }
             });
 
-            if(self.options.showValues){
-              $("#" + sliderName).after("<p id='" + sliderName + "-value' style='text-align: center;'></p>");
+            if (self.options.showSelectedRange){
+                $("#" + sliderName).after("<p id='" + sliderName + "-value' class='selected-range'></p>");
             }
 
             updateHistogram(self.options.selectedRange, false, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);

@@ -7,19 +7,21 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="histogram.slider.css">
     <script src="histogram.slider.js"></script>
     <script>
         $(function () {
-            var numBins = 40;
+            var numBins = 40,
+                data = dataFactory(5000, numBins, false);
 
             $("#histogramSlider").histogramSlider({
-                data: dataFactory(5000, numBins, false),
+                data: data,
                 sliderRange: [0, 1000000],
                 optimalRange: [0, 300000],
                 selectedRange: [150000, 750000],
                 numberOfBins: numBins,
                 showTooltips: true,
-                showValues: true
+                showSelectedRange: true
             });
 
             numBins = 20;
@@ -30,12 +32,11 @@
                 optimalRange: [0, 300000],
                 selectedRange: [150000, 750000],
                 numberOfBins: numBins,
-                showValues: false,
-                showTooltips: true,
-                colorSelected: "#db1855",
-                colorOptimal: "#b2f4be",
-                colorOptimalSelected: "#4ca630"
+                showSelectedRange: false,
+                showTooltips: true
             });
+
+            renderData(data);
 
             function dataFactory(itemCount, numberOfBins, group) {
                 var data = { "items": [] };
@@ -54,93 +55,51 @@
                 return data;
             }
 
-            // Verify the data is correct
-            // Display it in a table on the page
-            function sortNumber(a,b) {
-                return b - a;
-            }
+            function renderData(data) {
+                var dataArray = [];
 
+                for (var i = 0; i < data.items.length; i++) {
+                    dataArray.push(data.items[i].value);
+                }
+
+                dataArray = dataArray.sort(function (a, b) {
+                    return b - a;
+                });
+
+                var count = 0,
+                    dataTable = $("#data");
+
+                for (var i = 0; i < dataArray.length; i++) {
+                    count++;
+                    dataTable.after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>");
+
+                    if (round25000(dataArray[i]) > round25000(dataArray[i + 1])) {
+                        count = 0;
+                        dataTable.after("<tr><td>----------</td></tr>");
+                    }
+                }
+            }
+         
             function round25000(x)
             {
                 return Math.ceil(x/25000)*25000;
             }
-
-            var dataArray = []; data.items
-            for (var i = 0; i < data.items.length; i++) {
-                dataArray.push(data.items[i].value);
-            }
-
-            dataArray = dataArray.sort(sortNumber);
-
-            var count = 0;
-            for (var i = 0; i < dataArray.length; i++) {
-                count++;
-                $("#data").after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>");
-                if (round25000(dataArray[i]) > round25000(dataArray[i+1])) {
-                    count = 0;
-                    $("#data").after("<tr><td>----------</td></tr>");
-                }
-            }
         });
     </script>
     <style>
-        #histogramSlider {
-            max-width: 400px;
+        #histogramSlider, #histogramSlider2, #comp {
+            max-width: 723px;
             margin: auto;
-        }
-
-        #histogramSlider2 {
-            max-width: 400px;
-            margin: auto;
-        }
-
-        .display-none{
-          display: none;
-        }
-
-        .bin {
-            
-            margin-right: 1px;
-        }
-
-        .ui-slider-horizontal { height: .2em; }
-        .ui-slider .ui-slider-handle {
-            width: .8em;
-            height: .8em;
-            border-radius: 50%;
-        }
-
-        .ui-corner-all {
-            border-radius: 0px;
-        }
-
-        /* Tooltip text */
-        .tooltip > .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: lightgrey;
-            color: black;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-            margin-left: -60px;
-
-            /* Position the tooltip text - see examples below! */
-            position: absolute;
-            z-index: 100;
-        }
-
-        /* Show the tooltip text when you mouse over the tooltip container */
-        .tooltip:hover > .tooltiptext {
-            visibility: visible;
-            margin-top: 50px;
         }
     </style>
 </head>
-<body>
+<body>  
+    <div id="comp">
+        <img src="capture.png" alt="Comp"/>
+    </div>
     <div id="histogramSlider"></div>
 
-    <table style="display: none;">
+    <table >
       <tr id="data">
         <th>Value</th>
         <th>Running Count</th>
