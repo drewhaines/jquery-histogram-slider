@@ -29,8 +29,8 @@
             $("#histogramSlider2").histogramSlider({
                 data: dataFactory(300, numBins, true),
                 sliderRange: [0, 1000000],
-                optimalRange: [0, 300000],
-                selectedRange: [150000, 750000],
+                optimalRange: [150000, 300000],
+                selectedRange: [200000, 750000],
                 numberOfBins: numBins,
                 showSelectedRange: false,
                 showTooltips: true
@@ -99,7 +99,7 @@
     </div>
     <div id="histogramSlider"></div>
 
-    <table >
+    <table style="display: none;" >
       <tr id="data">
         <th>Value</th>
         <th>Running Count</th>

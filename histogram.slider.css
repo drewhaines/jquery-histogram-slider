@@ -1,6 +1,6 @@
  .bin { 
      position: relative; 
-     /*margin-right: 1px;*/ 
+     margin-right: 1px;
  }
 
  .bin-color { background-color: #DBE0E2; }

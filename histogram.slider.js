@@ -9,52 +9,57 @@
         $("#" + sliderName + "-value").html(leftValue + " - " + rightValue);
 
         // set opacity per bin based on the slider values
-        $("#"+ histogramName + " .in-range").each(function (index, bin) {
-            maxBinValue = rangePerBin * (index + 1);
-            minBinValue = (rangePerBin * index) + sliderMin;
-
-            if (leftSliderChanged && maxBinValue < rightValue) {
+        $("#" + histogramName + " .in-range").each(function (index, bin) {
+            var binRange = getBinRange(rangePerBin, index, sliderMin);
+            
+            if (leftSliderChanged && binRange[1] < rightValue) {
                 // Set opacity based on left (min) slider
-                if (leftValue > maxBinValue) {
+                if (leftValue > binRange[1]) {
                     setOpacity(bin, 0);
-                } else if (leftValue < minBinValue) {
+                } else if (leftValue < binRange[0]) {
                     setOpacity(bin, 1);
                 } else {
                     //setOpacity(bin, 1);
-                    setOpacity(bin, 1 - (leftValue - minBinValue) / rangePerBin);
+                    setOpacity(bin, 1 - (leftValue - binRange[0]) / rangePerBin);
                 }
-            } else if (!leftSliderChanged && minBinValue > leftValue) {
+            } else if (!leftSliderChanged && binRange[0] > leftValue) {
                 // Set opacity based on right (max) slider value
-                if (rightValue > maxBinValue) {
+                if (rightValue > binRange[1]) {
                     setOpacity(bin, 1);
-                } else if (rightValue < minBinValue) {
+                } else if (rightValue < binRange[0]) {
                     setOpacity(bin, 0);
                 } else {
                     //setOpacity(bin, 1);
-                    setOpacity(bin, (rightValue - minBinValue) / rangePerBin);
+                    setOpacity(bin, (rightValue - binRange[0]) / rangePerBin);
                 }
             }
         });
     };
 
+    var getBinRange = function(rangePerBin, index, sliderMin) {
+        var min = (rangePerBin * index) + sliderMin,
+            max = rangePerBin * (index + 1) - 1;
+
+        return [min, max];
+    }
+
     var setOpacity = function(bin, val) {
         $(bin).css("opacity", val);
     };
 
-    var calculateHeightRatio = function(bins, height) {
-        var heightRatio = 1, maxValue = 0;
+    var convertToHeight = function (v) {
+        return parseInt(5 * v + 1);
+    }
 
-        for (i = 0; i < bins.length; i++) {
-            if (bins[i] > maxValue) {
-                maxValue = bins[i];
-            }
+    var calculateHeightRatio = function(bins, histogramHeight) {
+        var maxValue = Math.max.apply(null, bins);
+        var height = convertToHeight(maxValue);
+
+        if (height > histogramHeight) {
+            return histogramHeight / height;
         }
 
-        if (parseInt(5 * maxValue + 1) > height) {
-            heightRatio = (height) / (5 * maxValue + 1);
-        }
-
-        return heightRatio;
+        return 1;
     }
 
     var Plugin = function (element, options) {
@@ -82,8 +87,7 @@
                 bins = new Array(this.options.numberOfBins).fill(0),
                 range = self.options.sliderRange[1] - self.options.sliderRange[0],
                 rangePerBin = range / this.options.numberOfBins;;
-
-            // iterate through data and increment the correct bin based on items.value
+            
             for (i = 0; i < dataItems.length; i++) {
                 var index = parseInt(dataItems[i].value / rangePerBin),
                     increment = 1;
@@ -107,23 +111,27 @@
             var heightRatio = calculateHeightRatio(bins, self.options.height),
                 widthPerBin = 100 / this.options.numberOfBins;
 
-            // create histogram based on bins. 5px of height for every item in that bin.
             for (i = 0; i < bins.length; i++) {
-                var rh = parseInt(bins[i] * heightRatio),   // set the relative height
-                    h = parseInt(5 * rh + 1),               // set the actual height using the relative height
-                    b = parseInt(self.options.height - h),  // set the bottom offset for the in-range bin
-                    bb = -parseInt(self.options.height - h * 2),  // set the bottom offset for the out-of-range bin
-                    minBinValue = (rangePerBin * i) + this.options.sliderRange[0],
-                    maxBinValue = rangePerBin * (i + 1) - 1,
-                    inRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "bin-color-optimal-selected" : "bin-color-selected"),
-                    outRangeStyling = ((self.options.optimalRange[1] > minBinValue) ? "bin-color-optimal" : "bin-color");
+                var binRange = getBinRange(rangePerBin, i, this.options.sliderRange[0]),
+                    inRangeClass = "bin-color-selected",
+                    outRangeClass = "bin-color";
 
-                var toolTipHtml = self.options.showTooltips ? "<span class='tooltiptext'>" + minBinValue + " - " + maxBinValue + "</br>count: " + bins[i] + "</span>" : "";
+                if (self.options.optimalRange[0] <= binRange[0] && binRange[0] <= self.options.optimalRange[1]) {
+                    inRangeClass = "bin-color-optimal-selected";
+                    outRangeClass = "bin-color-optimal";
+                }
+                    
+                var toolTipHtml = self.options.showTooltips ? "<span class='tooltiptext'>" + binRange[0] + " - " + binRange[1] + "</br>count: " + bins[i] + "</span>" : "";
+
+                var scaledValue = parseInt(bins[i] * heightRatio),
+                    height = convertToHeight(scaledValue),
+                    inRangeOffset = parseInt(self.options.height - height), 
+                    outRangeOffset = -parseInt(self.options.height - height * 2); 
 
                 var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
                     toolTipHtml +
-                    "<div class='bin in-range " + inRangeStyling + "' style='height:" + h + "px;bottom:-" + b + "px;position: relative;'></div>" +
-                    "<div class='bin out-of-range " + outRangeStyling + "' style='height:" + h + "px;bottom:" + bb + "px;position: relative;'></div>" +
+                    "<div class='bin in-range " + inRangeClass + "' style='height:" + height + "px;bottom:-" + inRangeOffset + "px;position: relative;'></div>" +
+                    "<div class='bin out-of-range " + outRangeClass + "' style='height:" + height + "px;bottom:" + outRangeOffset + "px;position: relative;'></div>" +
                     "</div>";
 
                 $("#" + histogramName).append(binHtml);
