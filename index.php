@@ -1,1 +1,1 @@
-<?php include_once("histogramslider.html"); ?>
+<?php include_once("bootstrap-histogramslider.html"); ?>
