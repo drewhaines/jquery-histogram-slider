@@ -141,8 +141,11 @@
                 range: true,
                 min: self.options.sliderRange[0],
                 max: self.options.sliderRange[1],
-                value: self.options.selectedRange
-            }).on('slide', function(event, x){
+                value: self.options.selectedRange,
+                tooltip: "hide"
+            }).on('slide', function(event){
+              updateHistogram(event.value, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
+            }).on('slideStop', function(event){
               updateHistogram(event.value, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
             });
 
@@ -150,7 +153,6 @@
                 $("#" + sliderName).after("<p id='" + sliderName + "-value' class='selected-range'></p>");
             }
 
-            updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
             updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
         }
     };
