@@ -1,1 +1,1 @@
-<?php include_once("bootstrap-histogramslider.html"); ?>
+<?php include_once("knockout.bootstrap.histogramslider.html"); ?>
