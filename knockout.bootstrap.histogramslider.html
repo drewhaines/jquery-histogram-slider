@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Histogram Slider</title>
+    <meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.8.1/bootstrap-slider.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="histogram.slider.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.histogram.slider.css">
+    <script src="bootstrap.histogram.slider.js"></script>
+    <style>
+        #histogramSlider, #histogramSlider2, #comp {
+            max-width: 723px;
+            margin: auto;
+        }
+        body {
+            overflow-x: hidden !important;
+        }
+        .container {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="comp">
+        <img src="capture.png" style="width: 100%;" alt="Comp"/>
+    </div>
+    <div id="histogramSlider" data-bind="slider: histoSlider"></div>
+
+    <table style="display: none;" >
+      <tr id="data">
+        <th>Value</th>
+        <th>Running Count</th>
+      </tr>
+    </table>
+
+    <div id="histogramSlider2"></div>
+    Range: <span data-bind="text: range"></span>
+
+    <script>
+        $(function () {
+            var numBins = 40,
+                data = dataFactory(5000, numBins, false);
+
+            function dataFactory(itemCount, numberOfBins, group) {
+                var data = { "items": [] };
+
+                for (var i = 0; i < itemCount; i++) {
+                    var rnd = Math.floor(Math.random() * numberOfBins) + 1;
+                    var rnd2 = Math.floor(Math.random() * 12000);
+                    var v = ((1000000 / numberOfBins) - rnd2) * rnd;
+                    if (group) {
+                        data.items.push({ "value": v, "count": rnd });
+                    } else {
+                        data.items.push({ "value": v });
+                    }
+                }
+
+                return data;
+            }
+
+            $("#histogramSlider").histogramSlider({
+                data: data,
+                sliderRange: [0, 1000000],
+                optimalRange: [0, 300000],
+                selectedRange: [150000, 750000],
+                numberOfBins: numBins,
+                showTooltips: true,
+                showSelectedRange: true
+            });
+
+            numBins = 20;
+
+            $("#histogramSlider2").histogramSlider({
+                data: dataFactory(300, numBins, true),
+                sliderRange: [0, 1000000],
+                optimalRange: [150000, 300000],
+                selectedRange: [200000, 750000],
+                numberOfBins: numBins,
+                showSelectedRange: false,
+                showTooltips: true
+            });
+
+            renderData(data);
+
+
+            function renderData(data) {
+                var dataArray = [];
+
+                for (var i = 0; i < data.items.length; i++) {
+                    dataArray.push(data.items[i].value);
+                }
+
+                dataArray = dataArray.sort(function (a, b) {
+                    return b - a;
+                });
+
+                var count = 0,
+                    dataTable = $("#data");
+
+                for (var i = 0; i < dataArray.length; i++) {
+                    count++;
+                    dataTable.after("<tr><td>" + dataArray[i] + "</td><td>" + count + "</td></tr>");
+
+                    if (round25000(dataArray[i]) > round25000(dataArray[i + 1])) {
+                        count = 0;
+                        dataTable.after("<tr><td>----------</td></tr>");
+                    }
+                }
+            }
+
+            function round25000(x)
+            {
+                return Math.ceil(x/25000)*25000;
+            }
+
+            ko.bindingHandlers.slider = {
+              init: function (element, valueAccessor, allBindingsAccessor) {
+                // slideStop event needed for onClick of the slider
+                ko.utils.registerEventHandler(element, "slideStop", function (event) {
+                    var observable = valueAccessor();
+                    observable(event.value);
+                });
+                ko.utils.registerEventHandler(element, "slide", function (event) {
+                    var observable = valueAccessor();
+                    observable(event.value);
+                });
+              },
+              update: function (element, valueAccessor) {
+                var value = ko.utils.unwrapObservable(valueAccessor());
+                console.log(value);
+              }
+            };
+
+
+            var ViewModel = function() {
+                var self = this;
+                self.histoSlider = ko.observable([150000, 750000]);
+                self.range = ko.computed(function() {
+                    return self.histoSlider()[0] + " - " + self.histoSlider()[1];
+                });
+            }
+
+            ko.applyBindings(new ViewModel());
+        });
+    </script>
+</body>
+</html>

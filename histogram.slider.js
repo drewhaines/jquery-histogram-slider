@@ -152,7 +152,6 @@
             }
 
             updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
-            updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
         }
     };
 
