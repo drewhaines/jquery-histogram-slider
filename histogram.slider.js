@@ -2,7 +2,7 @@
     var pluginName = "histogramSlider",
         dataKey = "plugin_" + pluginName;
 
-    var updateHistogram = function (selectedRange, leftSliderChanged, sliderMin, rangePerBin, histogramName, sliderName) {
+    var updateHistogram = function (selectedRange, sliderMin, rangePerBin, histogramName, sliderName) {
         var leftValue = selectedRange[0],
             rightValue = selectedRange[1];
 
@@ -11,8 +11,8 @@
         // set opacity per bin based on the slider values
         $("#" + histogramName + " .in-range").each(function (index, bin) {
             var binRange = getBinRange(rangePerBin, index, sliderMin);
-            
-            if (leftSliderChanged && binRange[1] < rightValue) {
+
+            if (binRange[1] < rightValue) {
                 // Set opacity based on left (min) slider
                 if (leftValue > binRange[1]) {
                     setOpacity(bin, 0);
@@ -22,7 +22,7 @@
                     //setOpacity(bin, 1);
                     setOpacity(bin, 1 - (leftValue - binRange[0]) / rangePerBin);
                 }
-            } else if (!leftSliderChanged && binRange[0] > leftValue) {
+            } else if (binRange[0] > leftValue) {
                 // Set opacity based on right (max) slider value
                 if (rightValue > binRange[1]) {
                     setOpacity(bin, 1);
@@ -87,7 +87,7 @@
                 bins = new Array(this.options.numberOfBins).fill(0),
                 range = self.options.sliderRange[1] - self.options.sliderRange[0],
                 rangePerBin = range / this.options.numberOfBins;;
-            
+
             for (i = 0; i < dataItems.length; i++) {
                 var index = parseInt(dataItems[i].value / rangePerBin),
                     increment = 1;
@@ -120,13 +120,13 @@
                     inRangeClass = "bin-color-optimal-selected";
                     outRangeClass = "bin-color-optimal";
                 }
-                    
+
                 var toolTipHtml = self.options.showTooltips ? "<span class='tooltiptext'>" + binRange[0] + " - " + binRange[1] + "</br>count: " + bins[i] + "</span>" : "";
 
                 var scaledValue = parseInt(bins[i] * heightRatio),
                     height = convertToHeight(scaledValue),
-                    inRangeOffset = parseInt(self.options.height - height), 
-                    outRangeOffset = -parseInt(self.options.height - height * 2); 
+                    inRangeOffset = parseInt(self.options.height - height),
+                    outRangeOffset = -parseInt(self.options.height - height * 2);
 
                 var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
                     toolTipHtml +
@@ -143,7 +143,7 @@
                 max: self.options.sliderRange[1],
                 values: self.options.selectedRange,
                 slide: function (event, ui) {
-                    updateHistogram(ui.values, Boolean(ui.handle.nextSibling), self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
+                    updateHistogram(ui.values, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
                 }
             });
 
@@ -151,8 +151,8 @@
                 $("#" + sliderName).after("<p id='" + sliderName + "-value' class='selected-range'></p>");
             }
 
-            updateHistogram(self.options.selectedRange, false, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
-            updateHistogram(self.options.selectedRange, true, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
+            updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
+            updateHistogram(self.options.selectedRange, self.options.sliderRange[0], rangePerBin, histogramName, sliderName);
         }
     };
 
