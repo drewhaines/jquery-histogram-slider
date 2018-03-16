@@ -23,7 +23,7 @@
      border-radius: 0;
  }
 
- .tooltip > .tooltiptext {
+ .histogramtooltip > .tooltiptext {
      visibility: hidden;
      width: 120px;
      background-color: #FFFFCA;
@@ -34,7 +34,7 @@
      z-index: 100;
  }
 
- .tooltip:hover > .tooltiptext {
+ .histogramtooltip:hover > .tooltiptext {
      visibility: visible;
      margin-top: 50px;
  }

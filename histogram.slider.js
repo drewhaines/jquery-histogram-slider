@@ -128,7 +128,7 @@
                     inRangeOffset = parseInt(self.options.height - height),
                     outRangeOffset = -parseInt(self.options.height - height * 2);
 
-                var binHtml = "<div class='tooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
+                var binHtml = "<div class='histogramtooltip' style='float:left!important;width:" + widthPerBin + "%;'>" +
                     toolTipHtml +
                     "<div class='bin in-range " + inRangeClass + "' style='height:" + height + "px;bottom:-" + inRangeOffset + "px;position: relative;'></div>" +
                     "<div class='bin out-of-range " + outRangeClass + "' style='height:" + height + "px;bottom:" + outRangeOffset + "px;position: relative;'></div>" +
